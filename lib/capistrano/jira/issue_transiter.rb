@@ -28,13 +28,13 @@ module Capistrano
 
       def execute
         issue.transitions.build.save!(transition_hash)
+        issue.comments.build.save!(:body => "Deployed to #{fetch(:stage)} in version #{fetch(:version)}")
       rescue JIRA::HTTPError => e
         raise TransitionError, error_message(e)
       end
 
       def transition_hash
         hash = { transition: { id: transition.id } }
-        hash.merge(comment_hash) if fetch(:jira_comment_on_transition)
         hash
       end
 
